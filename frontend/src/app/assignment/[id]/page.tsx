@@ -35,18 +35,20 @@ export default function AssignmentOutput() {
   const id = params.id;
 
   const [assignment, setAssignment] = useState<Assignment | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+ 
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval> | undefined;
-
+ 
     const fetchAssignment = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/assignments/${id}`);
         const data = response.data;
         setAssignment(data);
-
+        setInitialLoading(false);
+ 
         if (data.status === 'completed' || data.status === 'failed') {
           setLoading(false);
           if (intervalId) clearInterval(intervalId);
@@ -54,22 +56,34 @@ export default function AssignmentOutput() {
       } catch (err) {
         setError('Failed to load the assignment. Is the backend running?');
         console.error(err);
+        setInitialLoading(false);
         setLoading(false);
         if (intervalId) clearInterval(intervalId);
       }
     };
-
+ 
     if (id) {
       fetchAssignment();
       intervalId = setInterval(fetchAssignment, 1500);
     }
-
+ 
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
   }, [id]);
-
-  if (loading) {
+ 
+  if (initialLoading) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center px-6 py-16">
+        <div className="flex items-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-black text-[#2d2d2d] shadow-sm">
+          <Loader2 size={18} className="animate-spin" />
+          Loading assessment from database...
+        </div>
+      </div>
+    );
+  }
+ 
+  if (loading && assignment?.status === 'pending') {
     return (
       <div className="flex min-h-[70vh] items-center justify-center px-6 py-16">
         <div className="w-full max-w-md rounded-[28px] bg-white p-8 text-center shadow-sm">

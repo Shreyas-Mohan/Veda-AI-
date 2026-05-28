@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BookOpen, ClipboardList, Grid2X2, Library, Settings, Sparkles, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 
 const navItems = [
   { name: 'Home', icon: Grid2X2, href: '/' },
@@ -15,6 +18,19 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/assignments`);
+        setCount(response.data.length);
+      } catch (err) {
+        console.error('Error fetching assignments count:', err);
+      }
+    };
+    fetchCount();
+  }, [pathname]);
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-[250px] p-2 lg:block">
@@ -38,12 +54,13 @@ export default function Sidebar() {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = item.name === 'Assignments' && (pathname === '/' || pathname.startsWith('/assignment') || pathname === '/create');
+            const badgeValue = item.name === 'Assignments' && count !== null ? String(count) : item.badge;
             const content = (
               <span className={`flex h-11 w-full items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-all ${active ? 'bg-[#eeeeee] text-[#2d2d2d]' : 'text-[#7a7a7a] hover:bg-[#f3f3f3] hover:text-[#2d2d2d]'}`}>
                 <Icon size={18} />
                 <span className="flex-1">{item.name}</span>
-                {item.badge && active && (
-                  <span className="rounded-full bg-[#ff5a1f] px-2 py-0.5 text-[11px] font-black text-white">{item.badge}</span>
+                {badgeValue && active && (
+                  <span className="rounded-full bg-[#ff5a1f] px-2 py-0.5 text-[11px] font-black text-white">{badgeValue}</span>
                 )}
               </span>
             );

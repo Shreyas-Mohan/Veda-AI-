@@ -168,6 +168,7 @@ router.post('/', upload.single('referenceFile'), async (req: Request, res: Respo
             title: formData.title || 'Untitled Assessment',
             subject: formData.subject || 'General Knowledge',
             className: formData.className || '5th',
+            timeAllowed: formData.timeAllowed || '45 Minutes',
             dueDate: formData.dueDate,
             totalMarks: formData.totalMarks,
             totalQuestions: formData.totalQuestions,

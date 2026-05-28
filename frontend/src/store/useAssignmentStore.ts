@@ -11,11 +11,13 @@ interface AssignmentState {
   dueDate: string;
   subject: string;
   className: string;
+  timeAllowed: string;
   questionConfigs: QuestionConfig[];
   additionalInfo: string;
   setDueDate: (date: string) => void;
   setSubject: (subject: string) => void;
   setClassName: (className: string) => void;
+  setTimeAllowed: (timeAllowed: string) => void;
   addQuestionConfig: () => void;
   removeQuestionConfig: (id: string) => void;
   updateQuestionConfig: (id: string, field: keyof QuestionConfig, value: string | number) => void;
@@ -35,6 +37,7 @@ export const useAssignmentStore = create<AssignmentState>((set, get) => ({
   dueDate: '',
   subject: 'Science',
   className: '5th',
+  timeAllowed: '45 Minutes',
   // Start with some default rows to match Figma
   questionConfigs: [
     { id: '1', type: 'Multiple Choice Questions', count: 4, marks: 1 },
@@ -45,6 +48,7 @@ export const useAssignmentStore = create<AssignmentState>((set, get) => ({
   setDueDate: (date) => set({ dueDate: date }),
   setSubject: (subject) => set({ subject }),
   setClassName: (className) => set({ className }),
+  setTimeAllowed: (timeAllowed) => set({ timeAllowed }),
   
   addQuestionConfig: () => set((state) => ({
     questionConfigs: [

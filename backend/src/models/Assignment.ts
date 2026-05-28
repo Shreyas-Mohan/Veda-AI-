@@ -28,6 +28,7 @@ export interface IAssignment extends Document {
     title: string;
     subject?: string;
     className?: string;
+    timeAllowed?: string;
     dueDate: Date;
     totalMarks?: number;
     totalQuestions?: number;
@@ -63,6 +64,7 @@ const AssignmentSchema = new Schema<IAssignment>({
     title: { type: String, required: true },
     subject: { type: String, required: false },
     className: { type: String, required: false },
+    timeAllowed: { type: String, required: false },
     dueDate: { type: Date, required: true },
     totalMarks: { type: Number, required: false },
     totalQuestions: { type: Number, required: false },

@@ -26,11 +26,13 @@ export default function CreateAssignment() {
     dueDate,
     subject,
     className,
+    timeAllowed,
     questionConfigs,
     additionalInfo,
     setDueDate,
     setSubject,
     setClassName,
+    setTimeAllowed,
     addQuestionConfig,
     removeQuestionConfig,
     updateQuestionConfig,
@@ -51,6 +53,7 @@ export default function CreateAssignment() {
       payload.append('title', `Quiz on ${subject || 'General Knowledge'}`);
       payload.append('subject', subject);
       payload.append('className', className);
+      payload.append('timeAllowed', timeAllowed);
       payload.append('dueDate', dueDate || new Date().toISOString());
       payload.append('totalMarks', String(getTotalMarks()));
       payload.append('totalQuestions', String(getTotalQuestions()));
@@ -123,17 +126,29 @@ export default function CreateAssignment() {
           </div>
         </div>
 
-        <div className="mt-4">
-          <label className="mb-2 block text-xs font-black text-[#2d2d2d]">Due Date</label>
-          <div className="relative">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-xs font-black text-[#2d2d2d]">Due Date</label>
+            <div className="relative">
+              <input
+                type="date"
+                value={dueDate}
+                onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                onChange={(event) => setDueDate(event.target.value)}
+                className="h-11 w-full cursor-pointer rounded-full border border-[#dedede] bg-white px-4 pr-11 text-sm font-semibold text-[#2d2d2d] outline-none transition focus:border-[#222] [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:bottom-0 [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:top-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
+              />
+              <CalendarDays size={18} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#555]" />
+            </div>
+          </div>
+          <div>
+            <label className="mb-2 block text-xs font-black text-[#2d2d2d]">Time Allowed (e.g. 45 mins)</label>
             <input
-              type="date"
-              value={dueDate}
-              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-              onChange={(event) => setDueDate(event.target.value)}
-              className="h-11 w-full cursor-pointer rounded-full border border-[#dedede] bg-white px-4 pr-11 text-sm font-semibold text-[#2d2d2d] outline-none transition focus:border-[#222] [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:bottom-0 [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:top-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
+              value={timeAllowed}
+              onChange={(event) => setTimeAllowed(event.target.value)}
+              className="h-11 w-full rounded-full border border-[#dedede] bg-white px-4 text-sm font-semibold text-[#2d2d2d] outline-none transition focus:border-[#222]"
+              placeholder="45 Minutes"
+              required
             />
-            <CalendarDays size={18} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#555]" />
           </div>
         </div>
 

@@ -24,6 +24,7 @@ type Assignment = {
   status?: string;
   subject?: string;
   className?: string;
+  timeAllowed?: string;
   totalMarks?: number;
   questionPapers?: Array<{
     sections?: Section[];
@@ -75,9 +76,14 @@ export default function AssignmentOutput() {
   if (initialLoading) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center px-6 py-16">
-        <div className="flex items-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-black text-[#2d2d2d] shadow-sm">
-          <Loader2 size={18} className="animate-spin" />
-          Loading assessment from database...
+        <div className="w-full max-w-md rounded-[28px] bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#eeeeee] text-[#222]">
+            <Loader2 size={30} className="animate-spin" />
+          </div>
+          <h1 className="text-2xl font-black text-[#2d2d2d]">Fetching assessment...</h1>
+          <p className="mt-3 text-sm leading-6 text-[#777]">
+            Retrieving your previously created assignment from the database.
+          </p>
         </div>
       </div>
     );
@@ -128,7 +134,7 @@ export default function AssignmentOutput() {
     <div className="py-2 print:py-0">
       <section className="mb-3 rounded-[28px] bg-[#242424] p-7 text-white print:hidden">
         <h1 className="max-w-3xl text-base font-black leading-6">
-          Certainly, Lakshya! Here are customized Question Paper for your CBSE Grade 8 {assignment.subject || 'Science'} classes on the NCERT chapters:
+          Your AI-generated assessment for Class {assignment.className || '5th'} {assignment.subject || 'General Knowledge'} is ready.
         </h1>
         <button
           onClick={() => window.print()}
@@ -148,7 +154,7 @@ export default function AssignmentOutput() {
           </header>
 
           <div className="mb-7 flex items-center justify-between gap-4 text-sm font-black">
-            <span>Time Allowed: 45 minutes</span>
+            <span>Time Allowed: {assignment.timeAllowed || '45 Minutes'}</span>
             <span>Maximum Marks: {assignment.totalMarks || 40}</span>
           </div>
 

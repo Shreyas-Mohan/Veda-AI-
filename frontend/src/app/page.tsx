@@ -30,6 +30,7 @@ export default function AssignmentsDashboard() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'dueDate' | 'subject'>('newest');
 
   useEffect(() => {
     const fetchAssignments = async () => {
@@ -49,12 +50,38 @@ export default function AssignmentsDashboard() {
 
   const visibleAssignments = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) return assignments;
+    
+    // Sort assignments
+    const sorted = [...assignments].sort((a, b) => {
+      if (sortBy === 'newest') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      }
+      if (sortBy === 'oldest') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB;
+      }
+      if (sortBy === 'dueDate') {
+        const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 9999999999999;
+        const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 9999999999999;
+        return dateA - dateB;
+      }
+      if (sortBy === 'subject') {
+        const subjectA = a.subject || '';
+        const subjectB = b.subject || '';
+        return subjectA.localeCompare(subjectB);
+      }
+      return 0;
+    });
 
-    return assignments.filter((assignment) => {
+    if (!query) return sorted;
+
+    return sorted.filter((assignment) => {
       return `${assignment.title || ''} ${assignment.subject || ''} ${assignment.status || ''}`.toLowerCase().includes(query);
     });
-  }, [assignments, search]);
+  }, [assignments, search, sortBy]);
 
   const hasAssignments = visibleAssignments.length > 0;
 
@@ -69,10 +96,23 @@ export default function AssignmentsDashboard() {
       </div>
 
       <div className="mb-5 flex flex-col gap-4 rounded-[28px] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-        <button className="inline-flex items-center gap-3 text-base font-black text-[#aaa]">
-          <Filter size={22} />
-          Filter By
-        </button>
+        <div className="flex items-center gap-3">
+          <label htmlFor="sort-select" className="inline-flex items-center gap-3 text-base font-black text-[#aaa]">
+            <Filter size={22} />
+            Sort By:
+          </label>
+          <select
+            id="sort-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="rounded-xl border border-[#c9c9c9] bg-white px-3 py-1.5 text-sm font-bold text-[#2d2d2d] outline-none transition focus:border-[#222]"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="dueDate">Due Date</option>
+            <option value="subject">Subject</option>
+          </select>
+        </div>
         <div className="flex h-14 w-full items-center gap-3 rounded-full border border-[#c9c9c9] bg-white px-5 sm:max-w-[420px]">
           <Search size={24} className="text-[#aaa]" />
           <input

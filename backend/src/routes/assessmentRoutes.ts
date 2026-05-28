@@ -127,7 +127,7 @@ const processDirectly = async (assignmentId: string, formData: any) => {
             _id: new mongoose.Types.ObjectId()
         };
 
-        if (mongoose.connection.readyState === 1) {
+        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
             const newQuestionPaper = new QuestionPaper(paperData);
             await newQuestionPaper.save();
             await Assignment.findByIdAndUpdate(assignmentId, { status: 'completed' });
@@ -176,7 +176,7 @@ router.post('/', upload.single('referenceFile'), async (req: Request, res: Respo
         };
 
         // Try to save to MongoDB, else use memory
-        if (mongoose.connection.readyState === 1) {
+        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
             const assignment = new Assignment(assignmentData);
             await assignment.save();
             console.log('Saved to MongoDB');
@@ -221,7 +221,7 @@ router.get('/', async (_req: Request, res: Response) => {
     try {
         let assignments;
 
-        if (mongoose.connection.readyState === 1) {
+        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
             assignments = await Assignment.find()
                 .sort({ createdAt: -1 })
                 .lean();
@@ -246,7 +246,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         let assignment;
         let questionPapers;
 
-        if (mongoose.connection.readyState === 1) {
+        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
             assignment = await Assignment.findById(id).lean();
             questionPapers = await QuestionPaper.find({ assignmentId: id }).lean();
         } else {

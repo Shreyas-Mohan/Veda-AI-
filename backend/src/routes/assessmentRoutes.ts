@@ -127,7 +127,7 @@ const processDirectly = async (assignmentId: string, formData: any) => {
             _id: new mongoose.Types.ObjectId()
         };
 
-        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+        if (mongoose.connection.readyState === 1) {
             const newQuestionPaper = new QuestionPaper(paperData);
             await newQuestionPaper.save();
             await Assignment.findByIdAndUpdate(assignmentId, { status: 'completed' });
@@ -177,7 +177,7 @@ router.post('/', upload.single('referenceFile'), async (req: Request, res: Respo
         };
 
         // Try to save to MongoDB, else use memory
-        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+        if (mongoose.connection.readyState === 1) {
             const assignment = new Assignment(assignmentData);
             await assignment.save();
             console.log('Saved to MongoDB');
@@ -188,6 +188,9 @@ router.post('/', upload.single('referenceFile'), async (req: Request, res: Respo
         
         // 2. Try to dispatch to BullMQ (preferred)
         try {
+            if (mongoose.connection.readyState !== 1) {
+                throw new Error('MongoDB is not connected, bypassing Redis queue for in-memory fallback');
+            }
             if (!redisConnection || redisConnection.status !== 'ready') {
                 throw new Error('Redis connection is not ready');
             }
@@ -222,7 +225,7 @@ router.get('/', async (_req: Request, res: Response) => {
     try {
         let assignments;
 
-        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+        if (mongoose.connection.readyState === 1) {
             assignments = await Assignment.find()
                 .sort({ createdAt: -1 })
                 .lean();
@@ -247,7 +250,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         let assignment;
         let questionPapers;
 
-        if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+        if (mongoose.connection.readyState === 1) {
             assignment = await Assignment.findById(id).lean();
             questionPapers = await QuestionPaper.find({ assignmentId: id }).lean();
         } else {

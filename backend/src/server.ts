@@ -9,7 +9,7 @@ import assessmentRoutes from './routes/assessmentRoutes';
 
 dotenv.config();
 // Force Node.js to use Google's DNS to bypass Mobile Hotspot blocks
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+// dns.setServers(['8.8.8.8', '8.8.4.4']); // REMOVED: This causes MongoDB connection timeouts by breaking SRV resolution on certain networks.
 
 const app = express();
 const PORT = process.env.PORT || 5001;

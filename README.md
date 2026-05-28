@@ -51,8 +51,8 @@ The project already contains sandbox credentials for MongoDB Atlas and Redis, so
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/JayH25/Veda-AI-Assignment-hackathon-.git
-cd Veda-AI-Assignment-hackathon-
+git clone https://github.com/Shreyas-Mohan/Veda-AI-.git
+cd Veda-AI-
 ```
 
 ---
@@ -60,7 +60,7 @@ cd Veda-AI-Assignment-hackathon-
 ## 2️⃣ Start Backend
 
 ```bash
-cd ai-assessment-creator/backend
+cd backend
 npm install
 npm run dev
 ```
@@ -68,7 +68,7 @@ npm run dev
 Backend runs on:
 
 ```bash
-http://localhost:5000
+http://localhost:5001
 ```
 
 ---
@@ -164,9 +164,7 @@ Preview the final paper and:
 # 📁 Project Structure
 
 ```bash
-VedaAI-Hackathon/
-├── ai-assessment-creator/
-│
+Veda-AI-/
 ├── backend/
 │   ├── src/
 │   │   ├── config/       # Database & Redis configuration

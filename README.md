@@ -3,9 +3,6 @@
 VedaAI is a sophisticated AI-powered platform designed for educators to generate high-quality and professional question papers within minutes.
 It provides a smooth 3-step workflow, real-time AI generation tracking, and beautifully formatted ready-to-print assessment papers.
 
-![Light/Dark Mode](https://img.shields.io/badge/Mode-Light%20%26%20Dark-blue)
-![Hackathon Ready](https://img.shields.io/badge/Status-Hackathon--Ready-brightgreen)
-
 ---
 
 # ✨ Features

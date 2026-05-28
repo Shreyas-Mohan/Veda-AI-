@@ -25,10 +25,12 @@ export default function CreateAssignment() {
   const {
     dueDate,
     subject,
+    className,
     questionConfigs,
     additionalInfo,
     setDueDate,
     setSubject,
+    setClassName,
     addQuestionConfig,
     removeQuestionConfig,
     updateQuestionConfig,
@@ -48,6 +50,7 @@ export default function CreateAssignment() {
       const payload = new FormData();
       payload.append('title', `Quiz on ${subject || 'General Knowledge'}`);
       payload.append('subject', subject);
+      payload.append('className', className);
       payload.append('dueDate', dueDate || new Date().toISOString());
       payload.append('totalMarks', String(getTotalMarks()));
       payload.append('totalQuestions', String(getTotalQuestions()));
@@ -98,14 +101,26 @@ export default function CreateAssignment() {
         </label>
         <p className="mt-3 text-center text-xs font-medium text-[#8f8f8f]">Upload a PDF, notes file, screenshot, or document image for AI context</p>
 
-        <div className="mt-5">
-          <label className="mb-2 block text-xs font-black text-[#2d2d2d]">Subject</label>
-          <input
-            value={subject}
-            onChange={(event) => setSubject(event.target.value)}
-            className="h-11 w-full rounded-full border border-[#dedede] bg-white px-4 text-sm font-semibold text-[#2d2d2d] outline-none transition focus:border-[#222]"
-            placeholder="Science"
-          />
+        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-xs font-black text-[#2d2d2d]">Subject</label>
+            <input
+              value={subject}
+              onChange={(event) => setSubject(event.target.value)}
+              className="h-11 w-full rounded-full border border-[#dedede] bg-white px-4 text-sm font-semibold text-[#2d2d2d] outline-none transition focus:border-[#222]"
+              placeholder="Science"
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-xs font-black text-[#2d2d2d]">Class (e.g. 5th, 8th)</label>
+            <input
+              value={className}
+              onChange={(event) => setClassName(event.target.value)}
+              className="h-11 w-full rounded-full border border-[#dedede] bg-white px-4 text-sm font-semibold text-[#2d2d2d] outline-none transition focus:border-[#222]"
+              placeholder="5th"
+              required
+            />
+          </div>
         </div>
 
         <div className="mt-4">

@@ -27,6 +27,7 @@ export interface IQuestionPaper extends Document {
 export interface IAssignment extends Document {
     title: string;
     subject?: string;
+    className?: string;
     dueDate: Date;
     totalMarks?: number;
     totalQuestions?: number;
@@ -61,6 +62,7 @@ const QuestionPaperSchema = new Schema<IQuestionPaper>({
 const AssignmentSchema = new Schema<IAssignment>({
     title: { type: String, required: true },
     subject: { type: String, required: false },
+    className: { type: String, required: false },
     dueDate: { type: Date, required: true },
     totalMarks: { type: Number, required: false },
     totalQuestions: { type: Number, required: false },

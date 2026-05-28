@@ -23,6 +23,7 @@ type Section = {
 type Assignment = {
   status?: string;
   subject?: string;
+  className?: string;
   totalMarks?: number;
   questionPapers?: Array<{
     sections?: Section[];
@@ -129,7 +130,7 @@ export default function AssignmentOutput() {
           <header className="pb-7 text-center">
             <h1 className="text-2xl font-black text-[#2d2d2d]">Delhi Public School, Sector-4, Bokaro</h1>
             <p className="mt-2 text-base font-black">Subject: {assignment.subject || 'General Knowledge'}</p>
-            <p className="mt-1 text-base font-black">Class: 5th</p>
+            <p className="mt-1 text-base font-black">Class: {assignment.className || '5th'}</p>
           </header>
 
           <div className="mb-7 flex items-center justify-between gap-4 text-sm font-black">
@@ -142,7 +143,7 @@ export default function AssignmentOutput() {
           <div className="mb-7 space-y-1 text-sm font-semibold">
             <p>Name: ____________________</p>
             <p>Roll Number: ______________</p>
-            <p>Class: 5th Section: _________</p>
+            <p>Class: {assignment.className || '5th'} Section: _________</p>
           </div>
 
           <div className="space-y-10">

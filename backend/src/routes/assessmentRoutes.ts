@@ -167,6 +167,7 @@ router.post('/', upload.single('referenceFile'), async (req: Request, res: Respo
             _id: new mongoose.Types.ObjectId(),
             title: formData.title || 'Untitled Assessment',
             subject: formData.subject || 'General Knowledge',
+            className: formData.className || '5th',
             dueDate: formData.dueDate,
             totalMarks: formData.totalMarks,
             totalQuestions: formData.totalQuestions,

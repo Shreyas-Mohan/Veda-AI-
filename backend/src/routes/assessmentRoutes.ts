@@ -279,7 +279,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Delete an assignment and its associated question papers
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
 
         if (mongoose.connection.readyState === 1) {
             let assignment = null;

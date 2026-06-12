@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IQuestion {
   question: string;
-  difficulty: 'Easy' | 'Moderate' | 'Hard';
+  difficulty: 'Easy' | 'Moderate' | 'Hard' | 'Medium' | 'Challenging';
   marks: number;
 }
 
@@ -19,7 +19,7 @@ export interface IQuestionPaper extends Document {
 
 const QuestionSchema: Schema = new Schema({
   question: { type: String, required: true },
-  difficulty: { type: String, enum: ['Easy', 'Moderate', 'Hard'], required: true },
+  difficulty: { type: String, enum: ['Easy', 'Moderate', 'Hard', 'Medium', 'Challenging'], required: true },
   marks: { type: Number, required: true },
 });
 

@@ -281,12 +281,27 @@ router.delete('/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
 
         if (mongoose.connection.readyState === 1) {
-            const assignment = await Assignment.findByIdAndDelete(id);
-            if (!assignment) {
-                res.status(404).json({ error: 'Assignment not found' });
-                return;
+            let assignment = null;
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                assignment = await Assignment.findByIdAndDelete(id);
+                if (assignment) {
+                    await QuestionPaper.deleteMany({ assignmentId: id });
+                }
             }
-            await QuestionPaper.deleteMany({ assignmentId: id });
+            
+            if (!assignment) {
+                // Try memory fallback just in case
+                const assignmentIndex = memoryAssignments.findIndex(a => a._id.toString() === id);
+                if (assignmentIndex !== -1) {
+                    memoryAssignments.splice(assignmentIndex, 1);
+                    const papersToKeep = memoryPapers.filter(p => p.assignmentId !== id);
+                    memoryPapers.length = 0;
+                    memoryPapers.push(...papersToKeep);
+                } else {
+                    res.status(404).json({ error: 'Assignment not found' });
+                    return;
+                }
+            }
         } else {
             const assignmentIndex = memoryAssignments.findIndex(a => a._id.toString() === id);
             if (assignmentIndex === -1) {

@@ -134,8 +134,13 @@ ${imageInstruction}`;
                 parsed.sections.forEach((section: any) => {
                     if (section && Array.isArray(section.questions)) {
                         section.questions.forEach((q: any) => {
-                            if (q && (q.difficulty === 'Medium' || q.difficulty === 'medium')) {
-                                q.difficulty = 'Moderate';
+                            if (q && typeof q.difficulty === 'string') {
+                                const diff = q.difficulty.trim().toLowerCase();
+                                if (diff === 'medium') {
+                                    q.difficulty = 'Moderate';
+                                } else if (diff === 'hard' || diff === 'challenging') {
+                                    q.difficulty = 'Hard';
+                                }
                             }
                         });
                     }

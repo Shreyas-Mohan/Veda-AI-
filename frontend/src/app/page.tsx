@@ -48,6 +48,18 @@ export default function AssignmentsDashboard() {
     fetchAssignments();
   }, []);
 
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this assignment?")) return;
+    try {
+      await axios.delete(`${API_BASE_URL}/api/assignments/${id}`);
+      setAssignments((prev) => prev.filter((a) => a._id !== id));
+      setMenuOpen(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete the assignment.");
+    }
+  };
+
   const visibleAssignments = useMemo(() => {
     const query = search.trim().toLowerCase();
     
@@ -145,10 +157,12 @@ export default function AssignmentsDashboard() {
             {visibleAssignments.map((assignment) => (
               <article key={assignment._id} className="relative min-h-[170px] rounded-[28px] bg-white p-8 shadow-sm">
                 <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-black text-[#2d2d2d] underline decoration-[#bdbdbd] decoration-2 underline-offset-4">
-                      {assignment.title || `Quiz on ${assignment.subject || 'General Knowledge'}`}
-                    </h2>
+                  <div className="flex-1">
+                    <Link href={`/assignment/${assignment._id}`} className="hover:opacity-85 transition-opacity">
+                      <h2 className="text-2xl font-black text-[#2d2d2d] underline decoration-[#bdbdbd] decoration-2 underline-offset-4">
+                        {assignment.title || `Quiz on ${assignment.subject || 'General Knowledge'}`}
+                      </h2>
+                    </Link>
                     <p className="mt-2 text-sm font-semibold capitalize text-[#888]">
                       {assignment.status || 'pending'}
                       {typeof assignment.totalQuestions === 'number' ? ` • ${assignment.totalQuestions} questions` : ''}
@@ -174,7 +188,10 @@ export default function AssignmentsDashboard() {
                     <Link href={`/assignment/${assignment._id}`} className="block w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#2d2d2d] hover:bg-[#f4f4f4]">
                       View Assignment
                     </Link>
-                    <button className="block w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-red-600 hover:bg-[#f4f4f4]">
+                    <button 
+                      onClick={() => handleDelete(assignment._id)}
+                      className="block w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-red-600 hover:bg-[#f4f4f4]"
+                    >
                       Delete
                     </button>
                   </div>

@@ -33,5 +33,19 @@ export const generateQuestionPaper = async (prompt: string) => {
 
   const responseText = response.choices[0]?.message?.content || '';
   const cleanedText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
-  return JSON.parse(cleanedText);
+  const parsed = JSON.parse(cleanedText);
+
+  if (Array.isArray(parsed)) {
+    parsed.forEach((section: any) => {
+      if (section && Array.isArray(section.questions)) {
+        section.questions.forEach((q: any) => {
+          if (q && (q.difficulty === 'Medium' || q.difficulty === 'medium')) {
+            q.difficulty = 'Moderate';
+          }
+        });
+      }
+    });
+  }
+
+  return parsed;
 };

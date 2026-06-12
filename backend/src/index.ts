@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import Assignment from './models/Assignment';
+import { Assignment } from './models/Assignment';
 import QuestionPaper from './models/QuestionPaper';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { RedisMemoryServer } from 'redis-memory-server';
@@ -63,6 +63,40 @@ let redisServer: any;
       res.status(201).json(assignment);
     } catch (error) {
       res.status(400).json({ error: 'Error creating assignment' });
+    }
+  });
+
+  app.get('/api/assignments', async (req, res) => {
+    try {
+      const assignments = await Assignment.find().sort({ createdAt: -1 });
+      res.json(assignments);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching assignments' });
+    }
+  });
+
+  app.get('/api/assignments/:id', async (req, res) => {
+    try {
+      const assignment = await Assignment.findById(req.params.id).lean();
+      if (!assignment) return res.status(404).json({ error: 'Assignment not found' });
+      const questionPapers = await QuestionPaper.find({ assignmentId: req.params.id }).lean();
+      res.json({
+        ...assignment,
+        questionPapers
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching assignment' });
+    }
+  });
+
+  app.delete('/api/assignments/:id', async (req, res) => {
+    try {
+      const assignment = await Assignment.findByIdAndDelete(req.params.id);
+      if (!assignment) return res.status(404).json({ error: 'Assignment not found' });
+      await QuestionPaper.deleteMany({ assignmentId: req.params.id });
+      res.json({ message: 'Assignment deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Error deleting assignment' });
     }
   });
 

@@ -1,7 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import dotenv from 'dotenv';
-import Assignment from '../models/Assignment';
+import { Assignment } from '../models/Assignment';
 import QuestionPaper from '../models/QuestionPaper';
 import { generateQuestionPaper } from '../services/gemini';
 import { getSocketIO } from '../index';
@@ -19,22 +19,22 @@ export const initQueue = () => {
   const assignmentWorker = new Worker('assignment-queue', async job => {
     const { assignmentId } = job.data;
     
-    const assignment = await Assignment.findById(assignmentId);
+    const assignment = await Assignment.findById(assignmentId) as any;
     if (!assignment) throw new Error('Assignment not found');
     
-    assignment.status = 'processing';
+    assignment.status = 'pending';
     await assignment.save();
     
     const io = getSocketIO();
-    io.emit('status-update', { assignmentId, status: 'processing' });
+    io.emit('status-update', { assignmentId, status: 'pending' });
     
     try {
       const prompt = `
         Due Date: ${assignment.dueDate}
-        Question Types: ${assignment.questionTypes.join(', ')}
+        Question Types: ${assignment.questionTypes?.join(', ') || ''}
         Total Questions: ${assignment.totalQuestions}
         Total Marks: ${assignment.totalMarks}
-        Instructions: ${assignment.instructions}
+        Instructions: ${assignment.additionalInstructions || assignment.instructions || ''}
         Context/Text: ${assignment.pdfText || 'None'}
       `;
       

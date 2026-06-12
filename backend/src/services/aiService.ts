@@ -58,7 +58,7 @@ The output MUST match this JSON structure:
       "questions": [
         {
           "text": "The full text of the question",
-          "difficulty": "Easy" or "Medium" or "Challenging",
+          "difficulty": "Easy" or "Moderate" or "Challenging",
           "marks": 5, // number
           "type": "Multiple Choice Questions" or "Short Questions" or "Long Questions" or "Numerical Problems"
         }
@@ -127,7 +127,26 @@ ${imageInstruction}`;
             throw new Error('Invalid response structure from Gemini API');
         }
 
-        return generatedText.trim();
+        let parsed: any;
+        try {
+            parsed = JSON.parse(generatedText.trim());
+            if (parsed && Array.isArray(parsed.sections)) {
+                parsed.sections.forEach((section: any) => {
+                    if (section && Array.isArray(section.questions)) {
+                        section.questions.forEach((q: any) => {
+                            if (q && (q.difficulty === 'Medium' || q.difficulty === 'medium')) {
+                                q.difficulty = 'Moderate';
+                            }
+                        });
+                    }
+                });
+            }
+        } catch (e) {
+            const sanitized = generatedText.replace(/"difficulty"\s*:\s*"(Medium|medium)"/g, '"difficulty": "Moderate"');
+            return sanitized.trim();
+        }
+
+        return JSON.stringify(parsed);
         
     } catch (error: any) {
         console.error('[Gemini API Error] Failed to generate:', error.message);
@@ -151,7 +170,7 @@ const generateMockPaper = async (formData: FormData): Promise<string> => {
                     instructions: `Attempt all questions in this section. Each question is worth ${q.marks} marks.`,
                     questions: Array.from({ length: q.count }).map((_, qIdx) => ({
                         text: `Sample generated ${q.type.toLowerCase()} question ${qIdx + 1} regarding ${formData.subject || 'General Knowledge'}.${referenceContext}${formData.additionalInstructions ? ` (Instruction: ${formData.additionalInstructions})` : ''}`,
-                        difficulty: qIdx % 3 === 0 ? "Easy" : qIdx % 3 === 1 ? "Medium" : "Challenging",
+                        difficulty: qIdx % 3 === 0 ? "Easy" : qIdx % 3 === 1 ? "Moderate" : "Challenging",
                         marks: q.marks,
                         type: q.type
                     }))

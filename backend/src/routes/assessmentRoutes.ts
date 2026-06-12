@@ -275,4 +275,36 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
+// Delete an assignment and its associated question papers
+router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        if (mongoose.connection.readyState === 1) {
+            const assignment = await Assignment.findByIdAndDelete(id);
+            if (!assignment) {
+                res.status(404).json({ error: 'Assignment not found' });
+                return;
+            }
+            await QuestionPaper.deleteMany({ assignmentId: id });
+        } else {
+            const assignmentIndex = memoryAssignments.findIndex(a => a._id.toString() === id);
+            if (assignmentIndex === -1) {
+                res.status(404).json({ error: 'Assignment not found' });
+                return;
+            }
+            memoryAssignments.splice(assignmentIndex, 1);
+            // Clean memory papers
+            const papersToKeep = memoryPapers.filter(p => p.assignmentId !== id);
+            memoryPapers.length = 0;
+            memoryPapers.push(...papersToKeep);
+        }
+
+        res.status(200).json({ message: 'Assignment deleted successfully' });
+    } catch (error: any) {
+        console.error('Error deleting assignment:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 export default router;

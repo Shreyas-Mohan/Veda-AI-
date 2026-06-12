@@ -17,7 +17,7 @@ export const generateQuestionPaper = async (prompt: string) => {
   Return ONLY a raw JSON array of sections. Do not use markdown blocks like \`\`\`json. Each section must have:
   - title (string)
   - instruction (string)
-  - questions (array of objects with 'question' (string), 'difficulty' ('Easy', 'Moderate', 'Hard'), 'marks' (number))
+  - questions (array of objects with 'question' (string; CRITICAL: if multiple-choice, include 4 choices labeled A, B, C, D on separate lines), 'difficulty' ('Easy', 'Moderate', 'Hard'), 'marks' (number))
   `;
 
   const response = await openai.chat.completions.create({

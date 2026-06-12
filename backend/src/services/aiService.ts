@@ -57,7 +57,7 @@ The output MUST match this JSON structure:
       "instructions": "Section instructions",
       "questions": [
         {
-          "text": "The full text of the question",
+          "text": "The full text of the question. CRITICAL: If the question type is 'Multiple Choice Questions', you MUST include the question text followed by 4 choices labeled A), B), C), D) on separate lines (e.g. 'What is the capital of France?\\nA) Paris\\nB) London\\nC) Berlin\\nD) Rome').",
           "difficulty": "Easy" or "Moderate" or "Challenging",
           "marks": 5, // number
           "type": "Multiple Choice Questions" or "Short Questions" or "Long Questions" or "Numerical Problems"

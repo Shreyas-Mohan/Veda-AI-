@@ -177,7 +177,7 @@ export default function AssignmentOutput() {
                   {section.questions.map((q: Question, qIdx: number) => (
                     <li key={qIdx} className="grid grid-cols-[24px_1fr] gap-1 text-sm leading-6">
                       <span>{qIdx + 1}.</span>
-                      <p>
+                      <p className="whitespace-pre-wrap">
                         <span>[{q.difficulty}] </span>
                         {q.text} <span>[{q.marks} Marks]</span>
                       </p>
